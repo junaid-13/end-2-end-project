@@ -1,5 +1,5 @@
 locals {
-  repository_name = "END-END project for Dev and staging"
+  repository_name = "END-END_project_for_Dev_and_staging"
 }
 
 resource "github_repository" "repo_name" {
