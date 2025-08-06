@@ -6,6 +6,7 @@ variable "github_token" {
 
 variable "github_owner" {
     description = "The GitHub owner for creating the repository in github account."
-    type = "string"
+    type = string
     default = "junaid-13"
 }
+
