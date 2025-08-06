@@ -3,14 +3,25 @@ locals {
 }
 
 resource "github_repository" "repo_name" {
-  name = local.repository_name
-  description = <<EOF
+  name                      = local.repository_name
+  description               = <<EOF
                         This is a repository in which we will write the code for the end-to-end project.
                         This repository will be used for both development and staging environments.
                     EOF
-}
+  visibility                = public
+  has_issues                = true
+  allow_merge_commit        = true
+  allow_auto_merge          = true
+  delete_branch_on_merge    = false
+  vulnerability_alerts      = true
 
-resource "github_branch_default" "main_branch" {
-  repository = github_repository.repo_name.name
-  branch     = "main"
+  security_and_analysis {
+    secret_scanning {
+                     status = "enabled"
+    }
+
+    secret_scanning_push_protection {
+                     status = "enabled"
+    }
+  }
 }
