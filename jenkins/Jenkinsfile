@@ -1,0 +1,65 @@
+pipeline {
+    agent {
+        label {
+            label 'agent-1'
+            retries 2
+        }
+    }
+
+    environment {
+        TARGET_DIR = "/home/ubuntu/jenkins_WS"
+        REPONAME = "end-2-end-project"
+        REPO_URL = "https://github.com/junaid-13/end-2-end-project.git"
+    }
+
+    stages {
+
+        stage('Check & Install Terraform') {
+            steps {
+                script {
+                    def terraformInstalled = sh(script: 'which terraform', returnStatus: true) == 0
+
+                    if (terraformInstalled) {
+                        echo '✅ Terraform is already installed.'
+                        sh 'terraform -version'
+                    } else {
+                        echo '⚙️ Terraform is not installed. Installing latest version...'
+
+                        sh '''
+                            set -e
+                            sudo apt-get update
+                            sudo apt-get install -y unzip gnupg software-properties-common
+
+                            wget -O- https://apt.releases.hashicorp.com/gpg | \
+                              sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+                            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+                              https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+                              sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+                            sudo apt-get update && sudo apt-get install -y terraform
+                            terraform -version
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    sh '''
+                        cd $TARGET_DIR
+
+                        if [ -d "$REPONAME" ]; then
+                            echo "✅ Repository $REPONAME is already present."
+                        else
+                            git clone $REPO_URL
+                            echo "📥 Repository cloned: $REPONAME"
+                        fi
+                    '''
+                }
+            }
+        }
+    }
+}
