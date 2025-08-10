@@ -140,6 +140,71 @@ choose_install_dir() {
   printf "%s" "$target"
 }
 
+# -------- unzip prerequisite (APT-based) --------
+
+installed_unzip_version() {
+  if have_cmd unzip; then
+    # Example first line: "UnZip 6.00 of 20 April 2009, by Debian..."
+    unzip -v 2>/dev/null | head -n1 | sed -n 's/^UnZip \([0-9][0-9.]*\).*/\1/p'
+    return 0
+  fi
+  return 1
+}
+
+install_unzip_if_needed() {
+  if have_cmd unzip; then
+    local uv
+    uv="$(installed_unzip_version || true)"
+    if [ -n "$uv" ]; then
+      echo "unzip is already present. Installed version: ${uv}"
+    else
+      echo "unzip is already present."
+    fi
+    return 0
+  fi
+
+  echo "unzip not found. Installing via apt-get…"
+  # Try apt-get install -y unzip with sudo if needed; log stderr like other steps
+  if [ "${EUID:-$(id -u)}" -eq 0 ]; then
+    apt-get install -y unzip 1>/dev/null 2> >(while read -r line; do
+      if echo "$line" | grep -qi "warning"; then
+        log_line "WARNING" "apt-get install unzip: $line"
+      else
+        log_line "ERROR"   "apt-get install unzip: $line"
+      fi
+    done)
+  elif have_cmd sudo; then
+    sudo apt-get install -y unzip 1>/dev/null 2> >(while read -r line; do
+      if echo "$line" | grep -qi "warning"; then
+        log_line "WARNING" "sudo apt-get install unzip: $line"
+      else
+        log_line "ERROR"   "sudo apt-get install unzip: $line"
+      fi
+    done)
+  else
+    log_line "ERROR" "Cannot install unzip: not root and sudo not available"
+    echo "Need root privileges to install 'unzip' (apt-get). See log: $LOG_FILE"
+    return 1
+  fi
+
+  if ! have_cmd unzip; then
+    log_line "ERROR" "unzip not found after apt-get install"
+    echo "'unzip' not found after installation. See log: $LOG_FILE"
+    return 1
+  fi
+
+  local uv
+  uv="$(installed_unzip_version || true)"
+  if [ -n "$uv" ]; then
+    echo "'unzip' installed successfully. Version: ${uv}"
+  else
+    echo "'unzip' installed successfully."
+  fi
+  return 0
+}
+
+# -------- Terraform install --------
+
 download_and_install_tf() {
   local latest os arch url tmpdir zipfile instdir
   latest="$1"
@@ -167,10 +232,10 @@ download_and_install_tf() {
     return 1
   fi
 
-  # Unzip
+  # Ensure unzip present (guard, though we already installed if needed)
   if ! have_cmd unzip; then
     log_line "ERROR" "unzip not found; cannot extract Terraform archive"
-    echo "'unzip' not found. Install it (e.g., 'apt-get install unzip' or 'brew install unzip') and retry. See log: $LOG_FILE"
+    echo "'unzip' not found. Install it (e.g., 'apt-get install unzip') and retry. See log: $LOG_FILE"
     rm -rf "$tmpdir"
     return 1
   fi
@@ -265,6 +330,12 @@ main() {
       echo "Failed to get latest version. See log: $LOG_FILE"
       exit 1
     fi
+
+    # NEW: ensure unzip prerequisite using apt-get (same logging style)
+    if ! install_unzip_if_needed; then
+      exit 1
+    fi
+
     echo "Latest Terraform version is ${latest}. Downloading and installing…"
     download_and_install_tf "$latest" || exit 1
   fi
