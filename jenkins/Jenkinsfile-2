@@ -1,10 +1,10 @@
 pipeline {
-    agent {
+  /*  agent {
         label {
             label 'agent-1'
             retries 5
         }
-    }
+    }*/
     environment {
         REPO_URL = "https://github.com/junaid-13/end-2-end-project.git"
         REPO_NAME = "end-2-end-project"
