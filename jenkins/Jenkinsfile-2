@@ -11,8 +11,10 @@ pipeline {
     }
     stages {
         stage ('Cloning repository') {
+            agent { 
+                label 'terraform'
+            }
             steps {
-                node 'terraform'
                 sh 'git clone $REPO_URL'
                 sh 'cd $REPO_NAME/scripts/'
                 sh 'chmod +x repo.sh'
@@ -20,15 +22,19 @@ pipeline {
             }
         }
         stage ('Terraform Installation') {
-            steps {
-                node 'terraform'
+                agent { 
+                    label 'terraform'
+                }
+                steps {
                 sh 'cd $REPO_NAME/scripts/'
                 sh 'chmod +x terraform-installation.sh'
                 sh './terraform-installation.sh'
             }
         }
         stage ('Deploying infrastructure') {
-            node 'terraform'
+              agent { 
+                    label 'terraform'
+                }
             steps {
                 sh 'terraform --version'
                 sh 'cd $REPO_NAME/GitHub_repository/'
