@@ -11,8 +11,8 @@ pipeline {
     }
     stages {
         stage ('Cloning repository') {
-            node 'terraform'
             steps {
+                node 'terraform'
                 sh 'git clone $REPO_URL'
                 sh 'cd $REPO_NAME/scripts/'
                 sh 'chmod +x repo.sh'
@@ -20,8 +20,8 @@ pipeline {
             }
         }
         stage ('Terraform Installation') {
-            node 'terraform'
             steps {
+                node 'terraform'
                 sh 'cd $REPO_NAME/scripts/'
                 sh 'chmod +x terraform-installation.sh'
                 sh './terraform-installation.sh'
