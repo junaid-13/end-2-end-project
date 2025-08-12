@@ -12,10 +12,10 @@ pipeline {
             steps {
                /* sh 'cd infra-deploy/scripts/'
                 sh 'chmod +x repo.sh'*/
-                sh "echo "Current working directory: $(pwd)""
-                sh 'chmod +x scripts/repo.sh'
-                sh './scripts/repo.sh'
-                sh './repo.sh'
+                sh '''echo "Current working directory: $(pwd)"
+                chmod +x scripts/repo.sh
+                ./scripts/repo.sh
+                ./repo.sh '''
             }
         }
         stage ('Terraform Installation') {
