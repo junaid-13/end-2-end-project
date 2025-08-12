@@ -22,8 +22,8 @@ pipeline {
                     label 'terraform'
                 }
                 steps {
-                sh ''' cd infra-deploy/scripts/'
-                chmod +x terraform-installation.sh
+                sh ''' 
+                chmod +x scripts/terraform-installation.sh
                 ./scripts/terraform-installation.sh '''
             }
         }
