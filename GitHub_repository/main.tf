@@ -25,7 +25,13 @@ resource "github_repository" "repo_name" {
   }
 }
 
+resource "github_repository_file" "readme_file" {
+  repository           = github_repository.repo_name.name
+  file                 = "README.md"
+  content              = "This is the README file for the END-END_project_for_Dev_and_staging"
+}
+
 resource "github_branch" "default_branch" {
-  repository = github_repository.repo_name.name
-  branch     = local.default_branch_name
+  repository            = github_repository.repo_name.name
+  branch                = local.default_branch_name
 }
