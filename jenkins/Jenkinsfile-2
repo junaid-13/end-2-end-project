@@ -39,8 +39,9 @@ pipeline {
                 echo 'Initializing Terraform...'
                 echo '###########################'
                 '''
-                sh 'terraform init'
                 sh '''
+                cd GitHub_repository/
+                terraform init'
                 echo '###########################'
                 echo 'Validating Terraform configuration...'
                 echo '###########################'
