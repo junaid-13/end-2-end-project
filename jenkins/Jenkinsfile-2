@@ -41,7 +41,8 @@ pipeline {
                 '''
                 sh '''
                 cd GitHub_repository/
-                terraform init'
+                echo "Current working directory: $(pwd)"
+                terraform init
                 echo '###########################'
                 echo 'Validating Terraform configuration...'
                 echo '###########################'
