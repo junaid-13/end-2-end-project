@@ -11,7 +11,7 @@ pipeline {
             }
             steps {
                 sh 'git clone $REPO_URL'
-                sh 'cd /infra-deploy/scripts'
+                sh 'cd $REPO_NAME/scripts/'
                 sh 'chmod +x repo.sh'
                 sh './repo.sh'
             }
