@@ -67,6 +67,11 @@ pipeline {
                 echo '###########################'
                 '''
                 retry (2) {
+                    sh '''
+                    sh '''
+                    cd GitHub_repository 
+                    pwd
+                    '''
                     sh 'terraform apply --auto-approve'
                 }
 
