@@ -9,7 +9,7 @@ pipeline {
         REPO_URL = "https://github.com/junaid-13/end-2-end-project.git"
         REPO_NAME = "end-2-end-project"
     }
-    /*stages {
+    stages {
         stage ('Cloning repository') {
             agent { 
                 label 'terraform'
@@ -20,7 +20,7 @@ pipeline {
                 sh 'chmod +x repo.sh'
                 sh './repo.sh'
             }
-        }*/
+        }
         stage ('Terraform Installation') {
                 agent { 
                     label 'terraform'
