@@ -14,8 +14,7 @@ pipeline {
                 sh 'chmod +x repo.sh'*/
                 sh '''echo "Current working directory: $(pwd)"
                 chmod +x scripts/repo.sh
-                ./scripts/repo.sh
-                ./repo.sh '''
+                ./scripts/repo.sh '''
             }
         }
         stage ('Terraform Installation') {
@@ -23,9 +22,9 @@ pipeline {
                     label 'terraform'
                 }
                 steps {
-                sh 'cd $REPO_NAME/scripts/'
-                sh 'chmod +x terraform-installation.sh'
-                sh './terraform-installation.sh'
+                sh ''' cd infra-deploy/scripts/'
+                chmod +x terraform-installation.sh
+                ./scripts/terraform-installation.sh '''
             }
         }
         stage ('Deploying infrastructure') {
