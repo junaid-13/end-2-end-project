@@ -40,7 +40,7 @@ pipeline {
                 echo '###########################'
                 '''
                 sh '''
-                cd GitHub_repository/
+                cd GitHub_repository
                 echo "Current working directory: $(pwd)"
                 terraform init
                 echo '###########################'
@@ -55,8 +55,11 @@ pipeline {
                 echo '###########################'
                 '''
                 retry (2) {
-                    sh  'echo "Current working directory: $(pwd)"'
-                    sh 'terraform plan -var github_token=$github_token'
+                    sh '''
+                    cd GitHub_repository
+                    echo "Current working directory: $(pwd)"
+                    terraform plan -var github_token=$github_token
+                    '''
                 }
                 sh '''
                 echo '###########################'
