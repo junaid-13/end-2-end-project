@@ -1,64 +1,79 @@
 pipeline {
-    agent {
-        label {
-            label 'agent-1'
-            retries 2
-        }
-    }
-
+    agent none
     environment {
-        TARGET_DIR = "/home/ubuntu/jenkins_WS"
-        REPONAME = "end-2-end-project"
         REPO_URL = "https://github.com/junaid-13/end-2-end-project.git"
+        REPO_NAME = "end-2-end-project"
     }
-
     stages {
-
-        stage('Check & Install Terraform') {
+        stage ('Cloning repository') {
+            agent { 
+                label 'terraform'
+            }
             steps {
-                script {
-                    def terraformInstalled = sh(script: 'which terraform', returnStatus: true) == 0
-
-                    if (terraformInstalled) {
-                        echo '✅ Terraform is already installed.'
-                        sh 'terraform -version'
-                    } else {
-                        echo '⚙️ Terraform is not installed. Installing latest version...'
-
-                        sh '''
-                            set -e
-                            sudo apt-get update
-                            sudo apt-get install -y unzip gnupg software-properties-common
-
-                            wget -O- https://apt.releases.hashicorp.com/gpg | \
-                              sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-
-                            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
-                              https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
-                              sudo tee /etc/apt/sources.list.d/hashicorp.list
-
-                            sudo apt-get update && sudo apt-get install -y terraform
-                            terraform -version
-                        '''
-                    }
-                }
+               /* sh 'cd infra-deploy/scripts/'
+                sh 'chmod +x repo.sh'*/
+                sh '''echo "Current working directory: $(pwd)"
+                chmod +x scripts/repo.sh
+                ./scripts/repo.sh '''
             }
         }
-
-        stage('Build') {
+        stage ('Terraform Installation') {
+                agent { 
+                    label 'terraform'
+                }
+                steps {
+                sh ''' 
+                chmod +x scripts/terraform-installation.sh
+                ./scripts/terraform-installation.sh '''
+            }
+        }
+        stage ('Deploying infrastructure') {
+              agent { 
+                    label 'terraform'
+                }
             steps {
-                script {
-                    sh '''
-                        cd $TARGET_DIR
+                sh 'terraform --version'
+                sh 'cd $REPO_NAME/GitHub_repository/'
+                sh '''
+                echo '*****************************'
+                echo 'Initializing Terraform...'
+                echo '*****************************'
+                '''
+                sh '''
+                cd GitHub_repository
+                echo "Current working directory: $(pwd)"
+                terraform init
+                echo '*****************************'
+                echo 'Validating Terraform configuration...'
+                echo '*****************************'
+                '''
+                sh 'terraform validate'
 
-                        if [ -d "$REPONAME" ]; then
-                            echo "✅ Repository $REPONAME is already present."
-                        else
-                            git clone $REPO_URL
-                            echo "📥 Repository cloned: $REPONAME"
-                        fi
+                sh '''
+                echo '*****************************'
+                echo 'Planning Terraform configuration...'
+                echo '*****************************'
+                '''
+                retry (2) {
+                    sh '''
+                    cd GitHub_repository
+                    echo "Current working directory: $(pwd)"
+                    terraform plan -var github_token=$github_token
                     '''
                 }
+                sh '''
+                echo '*****************************'
+                echo 'Applying Terraform configuration...'
+                echo '*****************************'
+                '''
+                retry (2) {
+                    sh '''
+                    cd GitHub_repository 
+                    pwd
+                    terraform apply --auto-approve -var github_token=$github_token
+                    '''
+                }
+
             }
         }
     }
