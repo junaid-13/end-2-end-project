@@ -70,8 +70,8 @@ pipeline {
                     sh '''
                     cd GitHub_repository 
                     pwd
+                    terraform apply --auto-approve
                     '''
-                    sh 'terraform apply --auto-approve'
                 }
 
             }
