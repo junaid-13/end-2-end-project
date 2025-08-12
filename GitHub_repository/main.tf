@@ -11,6 +11,7 @@ resource "github_repository" "repo_name" {
   allow_auto_merge          = true
   delete_branch_on_merge    = false
   vulnerability_alerts      = true
+  has_projects = false
 
   security_and_analysis {
     secret_scanning {
