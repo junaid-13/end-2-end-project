@@ -68,7 +68,6 @@ pipeline {
                 '''
                 retry (2) {
                     sh '''
-                    sh '''
                     cd GitHub_repository 
                     pwd
                     '''
