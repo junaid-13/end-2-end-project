@@ -55,6 +55,7 @@ pipeline {
                 echo '###########################'
                 '''
                 retry (2) {
+                    sh  'echo "Current working directory: $(pwd)"'
                     sh 'terraform plan -var github_token=$github_token'
                 }
                 sh '''
