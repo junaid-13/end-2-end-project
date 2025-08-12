@@ -33,7 +33,6 @@ pipeline {
                 }
             steps {
                 sh 'terraform --version'
-                sh 'cd $REPO_NAME/GitHub_repository/'
                 sh '''
                 echo '*****************************'
                 echo 'Initializing Terraform...'
