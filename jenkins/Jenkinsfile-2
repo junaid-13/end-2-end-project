@@ -10,7 +10,7 @@ pipeline {
                 label 'terraform'
             }
             steps {
-                sh 'cd scripts/'
+                sh 'cd infra-deploy/scripts/'
                 sh 'chmod +x repo.sh'
                 sh './repo.sh'
             }
