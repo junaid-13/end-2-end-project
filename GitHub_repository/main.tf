@@ -1,5 +1,6 @@
 locals {
-  repository_name = "END-END_project_for_Dev_and_staging"
+  repository_name     = "END-END_project_for_Dev_and_staging"
+  default_branch_name = "main"
 }
 
 resource "github_repository" "repo_name" {
@@ -11,7 +12,7 @@ resource "github_repository" "repo_name" {
   allow_auto_merge          = true
   delete_branch_on_merge    = false
   vulnerability_alerts      = true
-  has_projects = false
+  has_projects              = false
 
   security_and_analysis {
     secret_scanning {
@@ -22,4 +23,9 @@ resource "github_repository" "repo_name" {
                      status = "enabled"
     }
   }
+}
+
+resource "github_branch" "default_branch" {
+  repository = github_repository.repo_name.name
+  branch     = local.default_branch_name
 }
