@@ -40,7 +40,7 @@ resource "github_branch_protection" "default_branch_protection" {
   repository_id        = github_repository.repo_name.id
   pattern              = local.default_branch_name.name
   enforce_admins       = true
-  force_push_bypassers = false #Can be written with / for the users and teams
+  force_push_bypassers = "/junaid-13" #Can be written with / for the users and teams
   allows_deletions     = false
-  
+
 }
