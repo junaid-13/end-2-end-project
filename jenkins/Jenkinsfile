@@ -3,7 +3,7 @@ pipeline {
     environment {
         REPO_URL = "https://github.com/junaid-13/end-2-end-project.git"
         REPO_NAME = "end-2-end-project"
-        github_token = credentials('github_token')
+        GITHUB_TOKEN = credentials('github_token')
     }
     stages {
         stage ('Cloning repository') {
