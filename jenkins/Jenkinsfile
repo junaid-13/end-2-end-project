@@ -58,7 +58,7 @@ pipeline {
                     sh '''
                     cd GitHub_repository
                     echo "Current working directory: $(pwd)"
-                    terraform plan -var GITHUB_TOKEN=$GITHUB_TOKEN_PSWD
+                    terraform plan -var GITHUB_TOKEN=$GITHUB_TOKEN_PSW
                     '''
                 }
                 sh '''
@@ -71,7 +71,7 @@ pipeline {
                     cd GitHub_repository 
                     pwd
                     echo $GITHUB_TOKEN
-                    terraform apply --auto-approve -var GITHUB_TOKEN=$GITHUB_TOKEN_PSWD
+                    terraform apply --auto-approve -var GITHUB_TOKEN=$GITHUB_TOKEN_PSW
                     '''
                 }
 
