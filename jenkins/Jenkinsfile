@@ -70,7 +70,7 @@ pipeline {
                     sh '''
                     cd GitHub_repository 
                     pwd
-                    terraform apply --auto-approve -var github_token=$github_token
+                    terraform apply --auto-approve -var github_token=$GITHUB_TOKEN
                     '''
                 }
 
