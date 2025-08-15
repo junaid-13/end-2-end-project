@@ -70,6 +70,7 @@ pipeline {
                     sh '''
                     cd GitHub_repository 
                     pwd
+                    echo $GITHUB_TOKEN
                     terraform apply --auto-approve -var GITHUB_TOKEN=$GITHUB_TOKEN
                     '''
                 }
