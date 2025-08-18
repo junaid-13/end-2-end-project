@@ -3,6 +3,7 @@ pipeline {
     environment {
         REPO_URL = "https://github.com/junaid-13/end-2-end-project.git"
         REPO_NAME = "end-2-end-project"
+        GITHUB_TOKEN = credentials('github_token')
     }
     stages {
         stage ('Cloning repository') {
@@ -57,7 +58,7 @@ pipeline {
                     sh '''
                     cd GitHub_repository
                     echo "Current working directory: $(pwd)"
-                    terraform plan -var github_token=$github_token
+                    terraform plan -var GITHUB_TOKEN=$GITHUB_TOKEN_PSW
                     '''
                 }
                 sh '''
@@ -69,7 +70,8 @@ pipeline {
                     sh '''
                     cd GitHub_repository 
                     pwd
-                    terraform apply --auto-approve -var github_token=$github_token
+                    echo $GITHUB_TOKEN
+                    terraform apply --auto-approve -var GITHUB_TOKEN=$GITHUB_TOKEN_PSW
                     '''
                 }
 
