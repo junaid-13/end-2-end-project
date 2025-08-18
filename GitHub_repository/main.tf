@@ -1,5 +1,6 @@
 locals {
-  repository_name = "END-END_project_for_Dev_and_staging"
+  repository_name     = "END-END_project_for_Dev_and_staging"
+  default_branch_name = "main"
 }
 
 resource "github_repository" "repo_name" {
@@ -11,6 +12,7 @@ resource "github_repository" "repo_name" {
   allow_auto_merge          = true
   delete_branch_on_merge    = false
   vulnerability_alerts      = true
+  has_projects              = false
 
   security_and_analysis {
     secret_scanning {
@@ -21,4 +23,24 @@ resource "github_repository" "repo_name" {
                      status = "enabled"
     }
   }
+}
+
+resource "github_repository_file" "readme_file" {
+  repository           = github_repository.repo_name.name
+  file                 = "README.md"
+  content              = "This is the README file for the END-END_project_for_Dev_and_staging"
+}
+
+resource "github_branch" "default_branch" {
+  repository            = github_repository.repo_name.name
+  branch                = local.default_branch_name
+}
+
+resource "github_branch_protection" "default_branch_protection" {
+  repository_id        = github_repository.repo_name.id
+  pattern              = local.default_branch_name
+  enforce_admins       = true
+  force_push_bypassers = ["/junaid-13"] #Can be written with / for the users and teams
+  allows_deletions     = false
+
 }

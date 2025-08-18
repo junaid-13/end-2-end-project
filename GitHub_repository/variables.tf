@@ -9,4 +9,3 @@ variable "github_owner" {
     type = string
     default = "junaid-13"
 }
-
