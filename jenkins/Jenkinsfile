@@ -10,8 +10,7 @@ pipeline {
                 label 'terraform'
             }
             steps {
-               /* sh 'cd infra-deploy/scripts/'
-                sh 'chmod +x repo.sh'*/
+               
                 sh '''echo "Current working directory: $(pwd)"
                 chmod +x scripts/repo.sh
                 ./scripts/repo.sh '''
@@ -44,18 +43,23 @@ pipeline {
                 terraform init
                 '''
                 sh '''
+                cd GitHub_repository
                 echo '****************************'
                 echo 'Formatting the terraform....'
                 echo '*****************************'
                 terraform fmt
-               '''
+                '''
+
                 sh '''
-                echo' *************************************'
+                cd GitHub_repository
+                echo '*************************************'
                 echo 'Validating Terraform configuration...'
                 echo '*************************************'
                 terraform validate 
                 '''
+
                 sh '''
+                cd GitHub_repository
                 echo '*****************************'
                 echo 'Planning Terraform configuration...'
                 echo '*****************************'
@@ -68,6 +72,7 @@ pipeline {
                     '''
                 }
                 sh '''
+                cd GitHub_repository
                 echo '*****************************'
                 echo 'Applying Terraform configuration...'
                 echo '*****************************'
@@ -81,6 +86,6 @@ pipeline {
                 }
 
             }
+            }
         }
     }
-}
