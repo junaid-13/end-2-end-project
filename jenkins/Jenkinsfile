@@ -3,6 +3,7 @@ pipeline {
     environment {
         REPO_URL = "https://github.com/junaid-13/end-2-end-project.git"
         REPO_NAME = "end-2-end-project"
+        github_token = credentials('github_token')
     }
     stages {
         stage ('Cloning repository') {
@@ -42,12 +43,19 @@ pipeline {
                 cd GitHub_repository
                 echo "Current working directory: $(pwd)"
                 terraform init
-                echo '*****************************'
-                echo 'Validating Terraform configuration...'
-                echo '*****************************'
                 '''
-                sh 'terraform validate'
-
+                sh '''
+                echo '****************************'
+                echo 'Formatting the terraform....'
+                echo '*****************************'
+                terraform fmt
+               '''
+                sh '''
+                echo' *************************************'
+                echo 'Validating Terraform configuration...'
+                echo '*************************************'
+                terraform validate 
+                '''
                 sh '''
                 echo '*****************************'
                 echo 'Planning Terraform configuration...'
