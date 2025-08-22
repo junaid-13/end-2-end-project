@@ -28,7 +28,7 @@ resource "github_repository" "repo_name" {
 resource "github_repository_file" "readme_file" {
   repository           = github_repository.repo_name.name
   file                 = "README.md"
-  content              = "This is the README file for the END-END_project_for_Dev_and_staging"
+  content              = "This is the README file for the END-END_project_for_Dev_and_staging. I have created this repository with the help of Terraform."
 }
 
 resource "github_branch" "default_branch" {
